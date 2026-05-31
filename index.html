@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🤖 Johnny's Developer Hub - JA-HUB Ecosystem</title>
+    <link rel="shortcut icon" href="assets/images/icon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -2583,11 +2584,11 @@
 
         // Apple Music Player Core Logic
         const playlist = [
-            { name: "0. CROWN OF THORNS.mp3", title: "0. CROWN OF THORNS", path: "assets/sounds/0. CROWN OF THORNS.mp3" },
-            { name: "1. Hướng vào anhh.mp3", title: "1. Hướng vào anhh", path: "assets/sounds/1. Hướng vào anhh.mp3" },
-            { name: "2. Wait Her Call.mp3", title: "2. Wait Her Call", path: "assets/sounds/2. Wait Her Call.mp3" },
-            { name: "3. Trên cầu thiếu em.mp3", title: "3. Trên cầu thiếu em", path: "assets/sounds/3. Trên cầu thiếu em.mp3" },
-            { name: "4. Johnny A - Sau Những Đêm.mp3", title: "4. Johnny A - Sau Những Đêm", path: "assets/sounds/4. Johnny A - Sau Những Đêm.mp3" }
+            { name: "0. CROWN OF THORNS.mp3", title: "0. CROWN OF THORNS", path: "assets/sounds/0. CROWN OF THORNS.mp3", art: "assets/sounds/0. CROWN OF THORNS.jpg" },
+            { name: "1. Hướng vào anhh.mp3", title: "1. Hướng vào anhh", path: "assets/sounds/1. Hướng vào anhh.mp3", art: "assets/sounds/1. Hướng vào anhh.jpg" },
+            { name: "2. Wait Her Call.mp3", title: "2. Wait Her Call", path: "assets/sounds/2. Wait Her Call.mp3", art: "assets/sounds/2. Wait Her Call.jpg" },
+            { name: "3. Trên cầu thiếu em.mp3", title: "3. Trên cầu thiếu em", path: "assets/sounds/3. Trên cầu thiếu em.mp3", art: "assets/sounds/3. Trên cầu thiếu em.jpg" },
+            { name: "4. Johnny A - Sau Những Đêm.mp3", title: "4. Johnny A - Sau Những Đêm", path: "assets/sounds/4. Johnny A - Sau Những Đêm.mp3", art: "assets/sounds/4. Johnny A - Sau Những Đêm.jpg" }
         ];
 
         let currentTrackIdx = 0;
@@ -2642,7 +2643,8 @@
         function loadTrack(idx) {
             currentTrackIdx = idx;
             const track = playlist[currentTrackIdx];
-            audio.src = track.path;
+            audio.src = encodeURI(track.path);
+            audio.load(); // Force reset and reload audio source state
             playerTrackTitle.innerText = track.title;
             renderQueueList();
             
@@ -2653,26 +2655,31 @@
 
             // Load MP3 album art dynamically using jsmediatags
             if (typeof jsmediatags !== 'undefined') {
-                jsmediatags.read(track.path, {
-                    onSuccess: function(tag) {
-                        const tags = tag.tags;
-                        if (tags.picture) {
-                            const { data, format } = tags.picture;
-                            const byteArray = new Uint8Array(data);
-                            const blob = new Blob([byteArray], { type: format });
-                            const blobUrl = URL.createObjectURL(blob);
-                            playerAlbumArt.querySelector('img').src = blobUrl;
-                        } else {
-                            playerAlbumArt.querySelector('img').src = "assets/logo.png";
+                try {
+                    jsmediatags.read(encodeURI(track.path), {
+                        onSuccess: function(tag) {
+                            const tags = tag.tags;
+                            if (tags.picture) {
+                                const { data, format } = tags.picture;
+                                const byteArray = new Uint8Array(data);
+                                const blob = new Blob([byteArray], { type: format });
+                                const blobUrl = URL.createObjectURL(blob);
+                                playerAlbumArt.querySelector('img').src = blobUrl;
+                            } else {
+                                playerAlbumArt.querySelector('img').src = track.art;
+                            }
+                        },
+                        onError: function(error) {
+                            console.log('Error reading tags: ', error);
+                            playerAlbumArt.querySelector('img').src = track.art;
                         }
-                    },
-                    onError: function(error) {
-                        console.log('Error reading tags: ', error);
-                        playerAlbumArt.querySelector('img').src = "assets/logo.png";
-                    }
-                });
+                    });
+                } catch (e) {
+                    console.log('jsmediatags error: ', e);
+                    playerAlbumArt.querySelector('img').src = track.art;
+                }
             } else {
-                playerAlbumArt.querySelector('img').src = "assets/logo.png";
+                playerAlbumArt.querySelector('img').src = track.art;
             }
         }
 
@@ -2718,9 +2725,11 @@
         };
 
         audio.onended = () => {
-            // Auto loop inside playlist
-            let nextIdx = (currentTrackIdx + 1) % playlist.length;
-            playTrack(nextIdx);
+            // Auto loop inside playlist with a small timeout to let browser state settle
+            setTimeout(() => {
+                let nextIdx = (currentTrackIdx + 1) % playlist.length;
+                playTrack(nextIdx);
+            }, 100);
         };
 
         // Time calculations

@@ -103,7 +103,12 @@ jatechvn.github.io/
 ├── LICENSE                    # Giấy phép phần mềm MIT
 │
 ├── assets/                    # Thư mục tài nguyên
-│   └── logo.png               # Brand icon (Lobster AI co-pilot logo)
+│   ├── logo.png               # Brand icon (Lobster AI co-pilot logo)
+│   ├── images/                # Thư mục tài nguyên hình ảnh hệ thống
+│   │   └── icon.ico           # Biểu tượng trang web (favicon)
+│   └── sounds/                # Thư mục âm thanh phát nhạc và ảnh trích xuất
+│       ├── *.mp3              # Danh sách bài hát MP3
+│       └── *.jpg              # Ảnh album trích xuất từ file nhạc
 │
 └── i18n/                      # Thư mục đa ngôn ngữ
     ├── README.vi.md           # Bản tiếng Việt (Tệp tin này)
