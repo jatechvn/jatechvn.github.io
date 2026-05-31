@@ -1,0 +1,20 @@
+================================================================================
+                           SYSTEM INFORMATION CARD
+================================================================================
+Project Name  : jatechvn.github.io (JA-HUB Personal Portal)
+Tech Stack    : HTML5 / CSS3 (Liquid Glass UI) / ES6 Javascript
+Managed By    : OpenClaw AI Co-pilot & JA Auto Git
+Website       : https://jatechvn.github.io/
+License       : MIT License
+--------------------------------------------------------------------------------
+Description   : 
+  The official central landing page and automation workspace dashboard for 
+  Johnny (jatechvn). It visualizes the core Hub & Spokes architecture of 
+  JA-HUB, providing live project filtering, search index, code trees, 
+  device preferences detection (Dark/Light mode), and diagnostic terminal command 
+  simulations.
+--------------------------------------------------------------------------------
+Architecture  : 
+  Brain (Core Controller Node) connected to Workers (Python, AHK, C#, 
+  JavaScript, PowerShell, Batch, and Cloud VPS infrastructure).
+================================================================================
