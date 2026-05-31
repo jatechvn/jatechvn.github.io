@@ -71,6 +71,12 @@ A built-in simulated CLI terminal at the bottom of the portal. It lets users run
 *   `about`: Show the developer profile and design philosophy.
 *   `clear`: Wipe console diagnostics.
 
+### 4. Apple Music (iOS 16 style) Player
+A glassmorphic audio player pinned to the left sidebar representing ambient workspace music:
+*   **Dynamic Album Art**: Uses `jsmediatags` CDN to parse the playing MP3 metadata on-the-fly and extract the embedded album artwork to display as a circular spinning disk.
+*   **Toggleable Volume Slider Panel**: Clicking the volume toggle button expands/collapses a matching seek-bar volume controller with mute/unmute and max shortcuts.
+*   **Robust Setup**: Optimized scripts prioritize static page and project Explorer loading to bypass any CORS restrictions on local `file:///` protocols, with seamless autoplay fallbacks.
+
 ---
 
 ## 🏗️ System Architecture

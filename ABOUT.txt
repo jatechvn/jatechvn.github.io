@@ -11,8 +11,9 @@ Description   :
   The official central landing page and automation workspace dashboard for 
   Johnny (jatechvn). It visualizes the core Hub & Spokes architecture of 
   JA-HUB, providing live project filtering, search index, code trees, 
-  device preferences detection (Dark/Light mode), and diagnostic terminal command 
-  simulations.
+  device preferences detection (Dark/Light mode), diagnostic terminal command 
+  simulations, and a custom Apple Music iOS-styled audio player with dynamic 
+  embedded MP3 album art parser and toggleable volume slider.
 --------------------------------------------------------------------------------
 Architecture  : 
   Brain (Core Controller Node) connected to Workers (Python, AHK, C#, 

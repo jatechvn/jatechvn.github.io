@@ -71,6 +71,12 @@ Bảng điều khiển giả lập dòng lệnh Unix ở cuối trang cho phép 
 *   `about`: Hiển thị triết lý thiết kế và thông tin kiến trúc sư Johnny.
 *   `clear`: Dọn sạch màn hình console.
 
+### 4. Trình phát nhạc Apple Music (iOS 16 style)
+Trình phát nhạc giao diện kính mờ Liquid Glass được ghim ở cột sidebar trái:
+*   **Trích xuất Album Art Động**: Tích hợp CDN `jsmediatags` để tự động giải mã dữ liệu metadata nhúng bên trong tệp `.mp3` đang phát, lấy ảnh album và hiển thị dưới dạng đĩa nhạc tròn xoay sinh động.
+*   **Bảng Điều Khiển Âm Lượng Thu Gọn**: Nút loa điều khiển chính hỗ trợ nhấn để mở rộng/thu gọn bảng thanh trượt âm lượng iOS chuyên nghiệp bên dưới, có đầy đủ các tính năng như tắt/mở tiếng nhanh (Mute) và chỉnh âm lượng tối đa 100%.
+*   **Khởi Chạy Thông Minh & Autoplay**: Mã nguồn được tối ưu hóa chạy các tiến trình dựng giao diện tĩnh trước, bảo đảm trang web không bị treo do các chính sách chặn CORS của trình duyệt trên giao thức cục bộ `file:///`, kèm cơ chế phát tự động thông minh.
+
 ---
 
 ## 🏗️ Kiến trúc Hệ thống
