@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://jatechvn.github.io/">
-    <img src="assets/logo.png" alt="JA-HUB Logo" width="120" height="120" style="border-radius: 20px; box-shadow: 0 8px 24px rgba(0, 240, 255, 0.25);">
+    <img src="assets/logo.png" alt="JA-HUB Logo" width="120" height="120" style="border-radius: 20px; box-shadow: 0 8px 24px rgba(0, 169, 201, 0.25);">
   </a>
 </p>
 
@@ -12,7 +12,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Online-00ff87.svg?style=flat-square&logo=statuspage" alt="System Status">
-  <img src="https://img.shields.io/badge/Theme-Liquid_Glass-00f0ff.svg?style=flat-square&logo=tailwindcss" alt="Theme">
+  <img src="https://img.shields.io/badge/Theme-Obsidian_BilloDesign-00AFCD.svg?style=flat-square&logo=tailwindcss" alt="Theme">
   <img src="https://img.shields.io/badge/Tech-HTML5_/_CSS3_/_ES6-purple.svg?style=flat-square&logo=javascript" alt="Technology">
   <img src="https://img.shields.io/badge/Deploy-GitHub_Pages-orange.svg?style=flat-square&logo=github" alt="Deployment">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License">
@@ -20,14 +20,14 @@
 
 <p align="center">
   <a href="#introduction">🚀 Introduction</a> • 
-  <a href="#liquid-glass-design">🎨 Design System</a> • 
+  <a href="#premium-billodesign-aesthetics">🎨 Design System</a> • 
   <a href="#key-features">💡 Key Features</a> • 
   <a href="#system-architecture">🏗️ Architecture Map</a> • 
   <a href="https://jatechvn.github.io/">🌐 Visit Portal</a>
 </p>
 
 <p align="center">
-  🇻🇳 <b>Tiếng Việt</b> • <a href="i18n/README.vi.md">Translations Folder</a>
+  🇻🇳 <a href="i18n/README.vi.md">Tiếng Việt Bản dịch</a>
 </p>
 
 ---
@@ -40,15 +40,18 @@
 
 ---
 
-## 🎨 Liquid Glass Design
+## 🎨 Premium BilloDesign Aesthetics
 
-Inspired by the native frosted glass styles of Johnny's Python PySide6 projects (like `JA_AUTO_GIT`), the portal features a **Liquid Glass** theme engine:
+Inspired by the dark cyber-minimalism of [billodesign.webflow.io](https://billodesign.webflow.io/), the portal features an **Obsidian Glass** theme system:
 
-*   **Responsive Fluid Glass Plates**: Backdrop blur and transparency filters create high-fidelity panels with neon cyan and orange drop-shadows.
+*   **Interactive 3D Spline Orb**: The hero section background embeds an interactive WebGL 3D glass orb. It captures cursor hover movements to rotate dynamically, providing a premium futuristic visual center.
+*   **Curtained Welcome Preloader**: When the page loads, dark curtains lock scrolling and run a typed welcome greeting `"Welcome to JA-HUB"` along with a glowing progress bar, sliding open smoothly when ready.
+*   **Rotating Gradient Borders**: All core dashboard cards (Player, Map, Terminal, Projects) and call-to-action buttons feature glowing borders that rotate infinitely, powered by CSS custom properties (`@property --angle` and `linear-gradient` overlays).
+*   **Pulsing Status Indicators**: Integrated pulsing indicator dots next to panel titles to emphasize active processes.
 *   **Adaptive Light & Dark Modes**:
-    *   **Dark Mode (Default)**: Cyber-punk deep colors, neon connection highlights, and custom neon green logging consoles.
-    *   **Light Mode**: Frosted white panels (`rgba(240, 240, 240, 0.75)`), high-contrast gray text (`#111111`), and refined dark boundaries.
-*   **Device Preference Syncing**: Auto-detects device OS preference (`prefers-color-scheme`) on startup, dynamically adjusting opacity to ensure visual comfort. Includes a manual Sun/Moon override switch.
+    *   **Dark Mode (Default)**: Deep obsidian black `#010101`, frosted panels with thin cyan glow outlines, and high-tech typography.
+    *   **Light Mode**: Frosted white glass layout (`rgba(245, 245, 247, 0.85)`), high-contrast gray text (`#111111`), and refined dark boundaries.
+*   **Harmonious Typography**: Importing `Lato` (fordisplay/headings) paired with `IBM Plex Mono` / `JetBrains Mono` for code blocks and text outputs.
 
 ---
 

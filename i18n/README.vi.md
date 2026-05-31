@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://jatechvn.github.io/">
-    <img src="../assets/logo.png" alt="JA-HUB Logo" width="120" height="120" style="border-radius: 20px; box-shadow: 0 8px 24px rgba(0, 240, 255, 0.25);">
+    <img src="../assets/logo.png" alt="JA-HUB Logo" width="120" height="120" style="border-radius: 20px; box-shadow: 0 8px 24px rgba(0, 169, 201, 0.25);">
   </a>
 </p>
 
@@ -12,7 +12,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Tr%E1%BA%A1ng_th%C3%A1i-Online-00ff87.svg?style=flat-square&logo=statuspage" alt="System Status">
-  <img src="https://img.shields.io/badge/Giao_di%E1%BB%87n-Liquid_Glass-00f0ff.svg?style=flat-square&logo=tailwindcss" alt="Theme">
+  <img src="https://img.shields.io/badge/Giao_di%E1%BB%87n-Obsidian_BilloDesign-00AFCD.svg?style=flat-square&logo=tailwindcss" alt="Theme">
   <img src="https://img.shields.io/badge/C%C3%B4ng_ngh%E1%BB%87-HTML5_/_CSS3_/_ES6-purple.svg?style=flat-square&logo=javascript" alt="Technology">
   <img src="https://img.shields.io/badge/Tri%E1%BB%83n_khai-GitHub_Pages-orange.svg?style=flat-square&logo=github" alt="Deployment">
   <img src="https://img.shields.io/badge/Gi%E1%BA%A5y_ph%C3%A9p-MIT-yellow.svg?style=flat-square" alt="License">
@@ -20,7 +20,7 @@
 
 <p align="center">
   <a href="#giới-thiệu">🚀 Giới thiệu</a> • 
-  <a href="#giao-diện-liquid-glass">🎨 Hệ thống Giao diện</a> • 
+  <a href="#giao-diện-gốm-obsidian-billodesign">🎨 Hệ thống Giao diện</a> • 
   <a href="#tính-năng-nổi-bật">💡 Tính năng Nổi bật</a> • 
   <a href="#kiến-trúc-hệ-thống">🏗️ Sơ đồ Kiến trúc</a> • 
   <a href="https://jatechvn.github.io/">🌐 Ghé thăm Cổng Portal</a>
@@ -40,15 +40,18 @@
 
 ---
 
-## 🎨 Giao diện Liquid Glass
+## 🎨 Giao diện Gốm Obsidian BilloDesign
 
-Được truyền cảm hứng từ phong cách thiết kế kính mờ nguyên bản trên các ứng dụng PySide6 Python của Johnny (như `JA_AUTO_GIT`), cổng thông tin tích hợp một bộ máy giao diện **Liquid Glass**:
+Được truyền cảm hứng từ phong cách thiết kế cyber-minimalism tối giản nhưng cao cấp của [billodesign.webflow.io](https://billodesign.webflow.io/), cổng thông tin được lột xác với hệ thống giao diện **Kính Obsidian**:
 
-*   **Các tấm kính mờ linh hoạt (Glassmorphism)**: Các bộ lọc làm mờ hậu cảnh (backdrop blur) và độ trong suốt tạo nên các panel tinh tế kết hợp hiệu ứng neon phát sáng màu xanh cyan và cam.
+*   **Quả cầu 3D tương tác Spline**: Nền của khu vực giới thiệu được trang bị quả cầu thủy tinh 3D WebGL tương tác động. Nó sẽ xoay và nghiêng theo chuyển động di chuột thực tế của người dùng, mang lại trải nghiệm tương lai cao cấp.
+*   **Màn hình chờ rèm che Preloader**: Khi tải trang, rèm tối màu sẽ tạm thời khóa cuộn màn hình và hiển thị hiệu ứng gõ chữ chào mừng `"Welcome to JA-HUB"` cùng thanh chạy tải trang phát sáng, sau đó rèm sẽ tự động trượt mở sang hai bên.
+*   **Đường viền xoay phát sáng (Rotating Borders)**: Tất cả các bảng chức năng (Player, Map, Terminal, Projects) và nút hành động chính đều sở hữu đường viền sáng xoay tròn liên tục bằng CSS nâng cao (`@property --angle` kết hợp mặt nạ `linear-gradient`).
+*   **Điểm chấm nhấp nháy hệ thống**: Tích hợp các đèn LED nhấp nháy phát sáng (`pulse-status-indicator`) kế bên tiêu đề các panel để báo hiệu các luồng dữ liệu đang kết nối online.
 *   **Chế độ Sáng & Tối tương thích**:
-    *   **Chế độ Tối (Dark - Mặc định)**: Màu sắc mang hơi hướng cyber-punk, làm nổi bật sơ đồ kết nối và bảng ghi nhận hoạt động (console) màu xanh lục bảo.
-    *   **Chế độ Sáng (Light)**: Các tấm kính trắng mờ (`rgba(240, 240, 240, 0.75)`), chữ xám đen độ tương phản cao (`#111111`) và các đường viền tối màu thanh lịch.
-*   **Đồng bộ cấu hình thiết bị**: Tự động nhận diện thiết lập giao diện của hệ điều hành (`prefers-color-scheme`) để điều chỉnh độ sáng phù hợp nhất, đi kèm với nút chuyển đổi Mặt Trời/Mặt Trăng thủ công.
+    *   **Chế độ Tối (Dark - Mặc định)**: Màu đen Obsidian `#010101` chủ đạo, các tấm kính mờ với viền sáng xanh cyan tinh tế, font chữ kỹ thuật cao.
+    *   **Chế độ Sáng (Light)**: Các tấm kính trắng mờ phủ sương nhẹ (`rgba(245, 245, 247, 0.85)`), chữ xám đen tương phản cao (`#111111`) và các đường biên tối thanh lịch.
+*   **Phối hợp Font chữ Hài hòa**: Kết hợp font chữ hiển thị tiêu đề `Lato` với font chữ chuyên viết code `IBM Plex Mono` / `JetBrains Mono` cho các khối hiển thị dữ liệu kỹ thuật.
 
 ---
 
