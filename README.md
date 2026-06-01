@@ -48,6 +48,7 @@ Inspired by the dark cyber-minimalism of [billodesign.webflow.io](https://billod
 *   **Curtained Welcome Preloader**: When the page loads, dark curtains lock scrolling and run a typed welcome greeting `"Welcome to JA-HUB"` along with a glowing progress bar, sliding open smoothly when ready.
 *   **Rotating Gradient Borders**: All core dashboard cards (Player, Map, Terminal, Projects) and call-to-action buttons feature glowing borders that rotate infinitely, powered by CSS custom properties (`@property --angle` and `linear-gradient` overlays).
 *   **Pulsing Status Indicators**: Integrated pulsing indicator dots next to panel titles to emphasize active processes.
+*   **Click & Hover Sound Effects**: Integrated Howler.js to trigger satisfying click sounds (`click.mp3` loaded locally and played on any mouse click) and hover sounds (`hover.mp3` loaded locally on element hover) matching the exact sound effects of Billodesign.
 *   **Adaptive Light & Dark Modes**:
     *   **Dark Mode (Default)**: Deep obsidian black `#010101`, frosted panels with thin cyan glow outlines, and high-tech typography.
     *   **Light Mode**: Frosted white glass layout (`rgba(245, 245, 247, 0.85)`), high-contrast gray text (`#111111`), and refined dark boundaries.

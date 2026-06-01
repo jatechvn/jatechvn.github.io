@@ -1727,6 +1727,7 @@
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
 </head>
 <body>
     <!-- Preloader Curtains -->
@@ -2114,6 +2115,81 @@
                 document.body.style.overflow = '';
             }
         }, 5000);
+
+        // Click and Hover Sounds using Howler.js
+        let clickSound = null;
+        let hoverSound = null;
+
+        try {
+            clickSound = new Howl({ 
+                src: ["assets/sounds/click.mp3"],
+                volume: 0.35
+            });
+            
+            hoverSound = new Howl({ 
+                src: ["assets/sounds/hover.mp3"],
+                volume: 0.15
+            });
+        } catch (e) {
+            console.error("Howler init error:", e);
+        }
+
+        function playClickSound() {
+            try {
+                if (clickSound) clickSound.play();
+            } catch (e) {
+                console.log("Audio play error:", e);
+            }
+        }
+
+        function playHoverSound() {
+            try {
+                if (hoverSound) hoverSound.play();
+            } catch (e) {
+                console.log("Audio play error:", e);
+            }
+        }
+
+        // Attach sounds dynamically to interactive elements (hover only, click is global)
+        function attachInteractiveSounds() {
+            const selectors = [
+                'a', 
+                'button', 
+                '.filter-tab', 
+                '.lang-switch', 
+                '.theme-toggle-btn', 
+                '.map-node', 
+                '.project-card',
+                '.term-line',
+                '.btn-action',
+                '.queue-item',
+                '.folder-toggle',
+                '.file-item'
+            ];
+            
+            selectors.forEach(sel => {
+                document.querySelectorAll(sel).forEach(el => {
+                    if (!el.dataset.soundBound) {
+                        el.dataset.soundBound = "true";
+                        el.addEventListener('mouseenter', () => {
+                            playHoverSound();
+                        });
+                    }
+                });
+            });
+        }
+
+        // Initialize click sounds on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            attachInteractiveSounds();
+            // Periodically check for new nodes and attach sounds
+            setInterval(attachInteractiveSounds, 1000);
+
+            // Global click sound on document level to match template site
+            document.addEventListener('click', () => {
+                playClickSound();
+            });
+        });
 
         // Project dataset (Actual folder structure & files)
         const projectsData = [
@@ -2718,6 +2794,7 @@
                 `;
                 projectsContainer.appendChild(card);
             });
+            attachInteractiveSounds();
         }
 
         // Live typing search input handler
@@ -2941,6 +3018,7 @@
                 `;
                 playerQueueList.appendChild(item);
             });
+            attachInteractiveSounds();
         }
 
         function loadTrack(idx) {
@@ -3202,6 +3280,7 @@
         // Initial setup execution calls
         updateLanguageUI();
         renderProjects('all');
+        attachInteractiveSounds();
     </script>
 </body>
 </html>

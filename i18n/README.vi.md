@@ -48,6 +48,7 @@
 *   **Màn hình chờ rèm che Preloader**: Khi tải trang, rèm tối màu sẽ tạm thời khóa cuộn màn hình và hiển thị hiệu ứng gõ chữ chào mừng `"Welcome to JA-HUB"` cùng thanh chạy tải trang phát sáng, sau đó rèm sẽ tự động trượt mở sang hai bên.
 *   **Đường viền xoay phát sáng (Rotating Borders)**: Tất cả các bảng chức năng (Player, Map, Terminal, Projects) và nút hành động chính đều sở hữu đường viền sáng xoay tròn liên tục bằng CSS nâng cao (`@property --angle` kết hợp mặt nạ `linear-gradient`).
 *   **Điểm chấm nhấp nháy hệ thống**: Tích hợp các đèn LED nhấp nháy phát sáng (`pulse-status-indicator`) kế bên tiêu đề các panel để báo hiệu các luồng dữ liệu đang kết nối online.
+*   **Hiệu ứng âm thanh Click & Hover**: Tích hợp Howler.js để kích hoạt âm thanh click chuột (`click.mp3` được tải cục bộ và chạy khi nhấp chuột ở bất kỳ vị trí nào trên trang web) và âm thanh hover (`hover.mp3` được tải cục bộ khi di chuột qua các phần tử) tương ứng chính xác hiệu ứng âm thanh từ bản mẫu Billodesign.
 *   **Chế độ Sáng & Tối tương thích**:
     *   **Chế độ Tối (Dark - Mặc định)**: Màu đen Obsidian `#010101` chủ đạo, các tấm kính mờ với viền sáng xanh cyan tinh tế, font chữ kỹ thuật cao.
     *   **Chế độ Sáng (Light)**: Các tấm kính trắng mờ phủ sương nhẹ (`rgba(245, 245, 247, 0.85)`), chữ xám đen tương phản cao (`#111111`) và các đường biên tối thanh lịch.
