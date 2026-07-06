@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JA-HUB // Digital Software Ecosystem</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@200;300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', 'sans-serif'],
+            heading: ['"Instrument Serif"', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #030303;
+      margin: 0;
+      padding: 0;
+      color: #eae6df;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Floating ambient color glows (Infinity Style) */
+    .ambient-glow-1 {
+      position: fixed;
+      top: 10%;
+      left: 15%;
+      width: 40vw;
+      height: 40vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.06) 0%, rgba(3, 3, 3, 0) 70%);
+      pointer-events: none;
+      z-index: -1;
+      animation: drift 25s infinite ease-in-out;
+    }
+    .ambient-glow-2 {
+      position: fixed;
+      top: 45%;
+      right: 5%;
+      width: 45vw;
+      height: 45vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.05) 0%, rgba(3, 3, 3, 0) 70%);
+      pointer-events: none;
+      z-index: -1;
+      animation: drift 30s infinite ease-in-out;
+      animation-delay: -5s;
+    }
+    .ambient-glow-3 {
+      position: fixed;
+      bottom: 5%;
+      left: 20%;
+      width: 35vw;
+      height: 35vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.04) 0%, rgba(3, 3, 3, 0) 70%);
+      pointer-events: none;
+      z-index: -1;
+      animation: drift 20s infinite ease-in-out;
+      animation-delay: -10s;
+    }
+
+    @keyframes drift {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(50px, -70px) scale(1.15); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    /* Bento Grid Card Design */
+    .bento-card {
+      background: rgba(10, 10, 12, 0.65);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0px rgba(255, 255, 255, 0.02);
+      border-radius: 14px;
+      transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    /* Interactive hover glows depending on compiler stack technology */
+    .bento-card.dart-card:hover {
+      border-color: rgba(16, 185, 129, 0.35); /* emerald glow */
+      box-shadow: 0 20px 40px rgba(16, 185, 129, 0.05), inset 0 1px 0px rgba(255, 255, 255, 0.05);
+      transform: translateY(-4px);
+    }
+    .bento-card.py-card:hover {
+      border-color: rgba(139, 92, 246, 0.35); /* purple glow */
+      box-shadow: 0 20px 40px rgba(139, 92, 246, 0.05), inset 0 1px 0px rgba(255, 255, 255, 0.05);
+      transform: translateY(-4px);
+    }
+
+    /* Sound indicator wave bar animation */
+    .wave-bar {
+      width: 2px;
+      height: 3px;
+      background-color: rgba(255, 255, 255, 0.4);
+      transition: height 0.1s ease;
+      animation: wave 1.2s ease-in-out infinite alternate;
+      animation-play-state: paused;
+    }
+    .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.45s; }
+    
+    .wave-active .wave-bar {
+      background-color: #ffffff;
+      animation-play-state: running;
+    }
+    
+    @keyframes wave {
+      0% { height: 4px; }
+      100% { height: 18px; }
+    }
+
+    /* Intro Portal slide away */
+    .portal-cover {
+      transition: opacity 1.2s cubic-bezier(0.77, 0, 0.175, 1), visibility 1.2s;
+    }
+    .portal-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* 3D WebGL Canvas fixed positioning */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    /* Filter Pills active states */
+    .filter-btn {
+      transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+    }
+    .filter-btn.active {
+      background-color: #ffffff;
+      color: #030303;
+      border-color: #ffffff;
+    }
+  </style>
+</head>
+<body class="select-none font-sans">
+
+  <!-- Audio elements -->
+  <audio id="audio-element" preload="auto" loop></audio>
+  <audio id="click-fx" src="assets/sounds/click.mp3" preload="auto"></audio>
+  <audio id="hover-fx" src="assets/sounds/hover.mp3" preload="auto"></audio>
+
+  <!-- Ambient Light Followers (Infinity Style) -->
+  <div class="ambient-glow-1" id="ambient-glow"></div>
+  <div class="ambient-glow-2"></div>
+  <div class="ambient-glow-3"></div>
+
+  <!-- WebGL background canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Intro Screen (ArtPrize Shadows Portal - Dark Mode Edition) -->
+  <div id="intro-portal" class="fixed inset-0 z-50 bg-[#030303] flex flex-col justify-between p-8 md:p-16 portal-cover text-white">
+    <div class="flex justify-between items-center w-full">
+      <div class="flex items-center gap-3">
+        <img src="assets/logo.png" alt="Logo" class="w-10 h-10 rounded-xl border border-white/10 opacity-80">
+        <div>
+          <h2 class="text-xs font-mono tracking-[4px] text-white/50 leading-none font-semibold">JA-HUB // SOFTWARE</h2>
+          <p class="text-[9px] font-mono text-white/60 mt-1 leading-none">DIGITAL EXHIBITION</p>
+        </div>
+      </div>
+      <div class="text-[10px] font-mono text-white/40 tracking-wider">EST. 2026</div>
+    </div>
+
+    <div class="max-w-2xl mx-auto text-center flex flex-col items-center gap-8">
+      <div class="text-[10px] font-mono tracking-[6px] text-white/60 uppercase">// STACK PORTFOLIO</div>
+      <h1 class="text-6xl md:text-8xl font-heading italic tracking-tight text-white leading-none">
+        Infinity Style<br>Software Hub
+      </h1>
+      <p class="text-sm md:text-base text-white/60 max-w-md font-sans font-light leading-relaxed">
+        An immersive, high-performance developer hub displaying compiled Dart binaries and packaged Python script ecosystems. Organized, detailed, and deploy-ready.
+      </p>
+      
+      <!-- Start CTA -->
+      <button id="btn-enter" class="mt-4 border border-white/20 hover:border-white px-8 py-3 rounded-full text-xs font-mono tracking-widest text-white/80 hover:text-white hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-all duration-500 cursor-pointer">
+        START EXPLORING
+      </button>
+    </div>
+
+    <div class="flex flex-col md:flex-row justify-between items-center w-full gap-4 text-xs font-mono text-white/30">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse"></span>
+        SYSTEM INITIALIZED
+      </div>
+      <div>BEST ENJOYED WITH SOUND ON</div>
+    </div>
+  </div>
+
+  <!-- Header Navigation (Infinity Exact Style) -->
+  <header class="fixed top-0 left-0 right-0 z-30 bg-[#030303]/60 backdrop-blur-md border-b border-white/5 pointer-events-none">
+    
+    <!-- Top Nav Line -->
+    <div class="px-6 md:px-12 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-8 pointer-events-auto">
+        <div class="text-sm font-semibold tracking-[4px] text-white font-mono leading-none">INFINITY</div>
+        <nav class="hidden lg:flex items-center gap-6 text-[11px] font-medium text-white/60 font-sans">
+          <a href="#" onclick="filterCategory('all')" class="hover:text-white transition-colors">Ecosystem</a>
+          <a href="#" onclick="filterCategory('dart')" class="hover:text-white transition-colors">Dart Stack</a>
+          <a href="#" onclick="filterCategory('py')" class="hover:text-white transition-colors">Python Stack</a>
+        </nav>
+      </div>
+
+      <div class="flex items-center gap-4 pointer-events-auto">
+        <div class="hidden xl:flex flex-col text-right font-mono text-[9px] text-white/40 leading-none">
+          <span class="text-white font-bold" id="ambient-title">NO MUSIC</span>
+          <span class="mt-1" id="track-meta font-medium">EXHIBITION AMBIENT</span>
+        </div>
+        
+        <button id="sound-toggle" class="flex items-center gap-2 p-2.5 rounded-full border border-white/10 bg-[#030303]/60 backdrop-blur-md cursor-pointer hover:border-white/40 hover:bg-white/5 transition-all group" title="Toggle Background Ambient">
+          <div class="flex items-end gap-[2px] h-4 px-1" id="wave-container">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+          </div>
+        </button>
+
+        <a href="#flagship" class="bg-[#ec4899] hover:bg-[#db2777] text-white text-[11px] font-semibold px-4 py-2 rounded-full transition-all shadow-md shadow-pink-500/10">
+          View Projects ↓
+        </a>
+      </div>
+    </div>
+
+    <!-- Sub-Nav Theme Bar (resembles Learn, Security subnav) -->
+    <div class="px-6 md:px-12 py-2 border-t border-white/5 bg-[#030303]/40 flex justify-between items-center text-[10px] font-mono text-white/40">
+      <div class="flex items-center gap-4 pointer-events-auto">
+        <span class="text-white/20 select-none uppercase">// 3D Themes:</span>
+        <button onclick="switchBackgroundStyle('glass')" class="hover:text-white transition-colors text-white" id="style-glass">Glass Orbs</button>
+        <button onclick="switchBackgroundStyle('waves')" class="hover:text-colors hover:text-white transition-colors" id="style-waves">3D Waves</button>
+        <button onclick="switchBackgroundStyle('corridor')" class="hover:text-colors hover:text-white transition-colors" id="style-corridor">Gallery</button>
+        <button onclick="switchBackgroundStyle('showroom')" class="hover:text-colors hover:text-white transition-colors" id="style-showroom">Showroom</button>
+      </div>
+      <div>EST. 2026 // DART & PYTHON</div>
+    </div>
+  </header>
+
+  <!-- Content Container (Vertical Scrollable) -->
+  <main class="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pt-36 pb-24">
+    
+    <!-- Hero Header section (Infinity Style) -->
+    <section class="py-12 md:py-16 flex flex-col items-center select-text text-center">
+      <div class="text-[10px] font-mono tracking-[8px] text-white/40 uppercase mb-4 font-semibold">// JA-HUB DEVELOPER PLATFORM</div>
+      <h1 class="text-5xl md:text-7xl font-heading italic text-white leading-none tracking-tight">
+        Master Stacks. Code From Scratch.
+      </h1>
+      <p class="text-sm md:text-base text-white/50 max-w-2xl font-light font-sans mt-6 leading-relaxed">
+        High-performance developer tools, compiled desktop binary executables, and local automation scripts. Built completely from scratch by one engineer.
+      </p>
+
+      <!-- Center Action Pill Buttons -->
+      <div class="flex items-center gap-4 mt-8 select-none">
+        <button onclick="filterCategory('dart')" class="border border-emerald-500/30 hover:border-emerald-500 bg-[#10b981]/5 hover:bg-[#10b981]/10 text-emerald-400 text-xs font-semibold px-6 py-3 rounded-full transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.03)] cursor-pointer">
+          🎓 LEARN DART TOOLS
+        </button>
+        <button onclick="filterCategory('py')" class="border border-purple-500/30 hover:border-purple-500 bg-[#8b5cf6]/5 hover:bg-[#8b5cf6]/10 text-purple-400 text-xs font-semibold px-6 py-3 rounded-full transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(139,92,246,0.03)] cursor-pointer">
+          🐍 FREE PYTHON SCRIPTS
+        </button>
+      </div>
+    </section>
+
+    <!-- Top Two Flagship Cards (Infinity Stack style) -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-16 select-text" id="flagship">
+      <!-- Left Flagship: Dart Compiler -->
+      <div onclick="filterCategory('dart')" class="bento-card dart-card p-8 flex justify-between items-start gap-6 cursor-pointer">
+        <div class="flex-1 flex flex-col justify-between h-full">
+          <div>
+            <span class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase font-semibold">// DART COMPILER INFRASTRUCTURE</span>
+            <h2 class="text-2xl font-heading italic text-white mt-4">JA_Compiler Suite</h2>
+            <p class="text-xs text-white/60 leading-relaxed font-sans mt-3">
+              9 stable, high-speed compiled desktop CLI and GUI binaries. Fully native executables replacing manual network connects, ADB scripts, and Git operations.
+            </p>
+          </div>
+          <span class="text-xs font-mono text-emerald-400 mt-8 flex items-center gap-1 group-hover:underline">Explore Dart Ecosystem →</span>
+        </div>
+        <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-2xl flex-shrink-0">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+      </div>
+
+      <!-- Right Flagship: Python Service Ops -->
+      <div onclick="filterCategory('py')" class="bento-card py-card p-8 flex justify-between items-start gap-6 cursor-pointer">
+        <div class="flex-1 flex flex-col justify-between h-full">
+          <div>
+            <span class="text-[9px] font-mono tracking-widest text-purple-400 uppercase font-semibold">// PYTHON ECOSYSTEM OPERATIONS</span>
+            <h2 class="text-2xl font-heading italic text-white mt-4">JA_Service Ecosystem</h2>
+            <p class="text-xs text-white/60 leading-relaxed font-sans mt-3">
+              5 security-first local PySide6 scripts and modules covering real-time AI voice cloning, executable autobuilds, and database dictionaries.
+            </p>
+          </div>
+          <span class="text-xs font-mono text-purple-400 mt-8 flex items-center gap-1 group-hover:underline">Explore Python Ecosystem →</span>
+        </div>
+        <div class="bg-purple-500/10 border border-purple-500/20 text-purple-400 p-4 rounded-2xl flex-shrink-0">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Section Header (Master Gemini, OpenAI style) -->
+    <section class="py-6 mb-10 text-center select-text">
+      <div class="text-[10px] font-mono tracking-[8px] text-white/40 uppercase mb-4 font-semibold">// 14 STACKS IN THIS ARCHIVE</div>
+      <h2 class="text-4xl md:text-5xl font-sans font-bold text-white tracking-tight">
+        Master <span class="text-emerald-400">Android</span>, <span class="text-blue-400">SSH Connections</span>, <span class="text-purple-400">AI Neural Voice</span> & <span class="text-pink-400">Git Pipelines</span>
+      </h2>
+      <p class="text-sm text-white/40 max-w-xl mx-auto font-light mt-4 leading-relaxed">
+        Production-ready local desktop utilities, executable templates, and open-source dictionary tools. Zero sign-up required.
+      </p>
+    </section>
+
+    <!-- Search & Filter Controls -->
+    <section class="sticky top-24 z-20 py-4 flex flex-col md:flex-row gap-4 items-center justify-between bg-[#030303]/85 backdrop-blur-md border border-white/5 rounded-2xl px-6 mb-12 shadow-lg select-none">
+      <!-- Search Input -->
+      <div class="relative w-full md:w-80 flex-shrink-0 select-text">
+        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-white/30">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </span>
+        <input type="text" id="search-input" placeholder="Search projects..." class="w-full bg-white/[0.03] border border-white/10 rounded-full py-2.5 pl-10 pr-4 text-xs font-mono text-white placeholder-white/30 focus:outline-none focus:border-white/30 focus:bg-white/[0.05] transition-all">
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="flex items-center gap-2">
+        <button onclick="filterCategory('all')" id="filter-all" class="filter-btn active px-4 py-2 border border-white/10 rounded-full text-[10px] font-mono tracking-wider cursor-pointer">
+          All Stacks
+        </button>
+        <button onclick="filterCategory('dart')" id="filter-dart" class="filter-btn px-4 py-2 border border-white/10 rounded-full text-[10px] font-mono tracking-wider cursor-pointer">
+          🟢 Dart Stack
+        </button>
+        <button onclick="filterCategory('py')" id="filter-py" class="filter-btn px-4 py-2 border border-white/10 rounded-full text-[10px] font-mono tracking-wider cursor-pointer">
+          🟣 Python Stack
+        </button>
+      </div>
+    </section>
+
+    <!-- Bento Grid Container -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="project-grid">
+      <!-- Cards dynamically injected in JavaScript -->
+    </section>
+
+  </main>
+
+  <!-- Detailed overlay modal -->
+  <div id="modal-container" class="fixed inset-0 z-40 bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bento-card bg-[#0b0b0d] rounded-3xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden shadow-2xl relative text-white border border-white/10">
+      
+      <!-- Modal header -->
+      <div class="p-6 md:p-8 border-b border-white/5 relative flex-shrink-0">
+        <span class="text-[9px] font-mono tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full uppercase" id="modal-badge">STABLE BINARY</span>
+        <h2 class="text-3xl font-heading italic text-white mt-3" id="modal-title">ja_adb_tool</h2>
+        
+        <button class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-all cursor-pointer sound-click" id="modal-close">
+          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Modal Description content -->
+      <div class="flex-1 overflow-y-auto p-6 md:p-8 font-mono text-sm leading-relaxed text-white/70 space-y-4" id="modal-body">
+        <!-- Injected manually -->
+      </div>
+
+      <!-- Modal Footer actions -->
+      <div class="p-6 border-t border-white/5 bg-white/[0.02] flex justify-between items-center flex-shrink-0">
+        <div class="text-xs text-white/40 font-mono" id="modal-size-tag">SIZE: --</div>
+        <a href="#" class="bg-white hover:bg-white/90 text-black text-xs font-mono font-semibold px-6 py-3 rounded-full flex items-center gap-1.5 shadow-lg transition-all sound-click" id="modal-download-link" download>
+          🚀 DOWNLOAD SOURCE
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer Info bar -->
+  <footer class="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 py-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between text-xs font-mono text-white/30 gap-4">
+    <div>JA-HUB SOFTWARE ARCHIVE © 2026</div>
+    <div>BUILT FROM SCRATCH IN DART, PYTHON & WEBGL</div>
+  </footer>
+
+  <!-- JavaScript Logics -->
+  <script>
+    // System Data Registry
+    const projects = [
+      // Dart Apps
+      {
+        id: "ja_adb_tool",
+        name: "ja_adb_tool.exe",
+        displayName: "JA_adb_tool",
+        type: "Dart",
+        version: "v1.2.0",
+        description: "Android Debug Bridge UI controller. Connect and control devices via ADB, with scrcpy screen mirroring integration.",
+        download: "releases/dart/ja_adb_tool.exe",
+        size: "133 KB",
+        tags: ["Android", "ADB", "scrcpy", "GUI"],
+        icon: "📱",
+        readme: `<h3>📱 JA_adb_tool</h3><p>An Android Debug Bridge GUI utility designed to simplify Android debugging. Includes integration with <strong>scrcpy</strong> for screen sharing and device control.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>🔌 Auto-detect devices connected via USB or Local Network.</li><li>🖥️ One-click scrcpy screen mirroring & control.</li><li>📁 File manager for pushing/pulling files.</li><li>⚙️ Interactive shell terminal commands support.</li></ul>`
+      },
+      {
+        id: "ja_auto_git",
+        name: "ja_auto_git.exe",
+        displayName: "JA_Auto_Git",
+        type: "Dart",
+        version: "v1.5.0",
+        description: "Automated Git repository initializer, repository directory structure standardizer, and remote GitHub repository publisher.",
+        download: "releases/dart/ja_auto_git.exe",
+        size: "125 KB",
+        tags: ["Git", "GitHub", "Automation", "CLI"],
+        icon: "🤖",
+        readme: `<h3>🤖 JA_Auto_Git</h3><p>Automates workspace initialization and Github deployment. Standardizes commit messages, templates, and directory architectures.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>📂 Scan folders and initialize git sub-repositories.</li><li>📝 Generate standard .gitignore, README.md, and LICENSE.</li><li>🚀 Automatically create private/public repos on GitHub via CLI.</li></ul>`
+      },
+      {
+        id: "ja_connect",
+        name: "ja_connect.exe",
+        displayName: "JA_Connect",
+        type: "Dart",
+        version: "v1.0.4",
+        description: "Network connector utility for managing and tunnelling internal service endpoints.",
+        download: "releases/dart/ja_connect.exe",
+        size: "90 KB",
+        tags: ["Network", "Proxy", "SSH", "CLI"],
+        icon: "🔌",
+        readme: `<h3>🔌 JA_Connect</h3><p>A connection manager and SSH tunnel controller to bridge nodes and local hosts.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>🛡️ Create secure SSH local/remote port forwardings.</li><li>🔄 Automatic reconnection when socket drops.</li><li>📋 Simple configuration file setup.</li></ul>`
+      },
+      {
+        id: "ja_key_creator",
+        name: "ja_key_creator.exe",
+        displayName: "JA_KEY_CREATOR",
+        type: "Dart",
+        version: "v2.0.1",
+        description: "Secure software license generator and cryptographic key creator.",
+        download: "releases/dart/ja_key_creator.exe",
+        size: "126 KB",
+        tags: ["Security", "Licensing", "Crypto"],
+        icon: "🔑",
+        readme: `<h3>🔑 JA_KEY_CREATOR</h3><p>Cryptographic utility to generate and sign license keys for desktop software.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>🔒 RSA asymmetric key-pair generation.</li><li>📦 Signed hardware-bound licenses.</li><li>⏱️ Expiry date encoding.</li></ul>`
+      },
+      {
+        id: "ja_qrcode",
+        name: "ja_qrcode.exe",
+        displayName: "JA_QRcode",
+        type: "Dart",
+        version: "v1.1.0",
+        description: "High-speed CLI and GUI QR Code generator for quick file/text sharing.",
+        download: "releases/dart/ja_qrcode.exe",
+        size: "125 KB",
+        tags: ["Utility", "QR Code", "GUI"],
+        icon: "🖼️",
+        readme: `<h3>🖼️ JA_QRcode</h3><p>Generate high-resolution QR codes from files, links, or text instantly.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>🎨 Custom branding and color options.</li><li>📤 Export as PNG or SVG.</li><li>📋 Clipboard listener auto-generation.</li></ul>`
+      },
+      {
+        id: "ja_ssh_monitor",
+        name: "ja_ssh_monitor.exe",
+        displayName: "JA_SSH-PSREMOTE_Monitor",
+        type: "Dart",
+        version: "v1.3.2",
+        description: "SSH and PowerShell Remote system monitor for tracking VPS & server connection status.",
+        download: "releases/dart/ja_ssh_monitor.exe",
+        size: "124 KB",
+        tags: ["DevOps", "Monitoring", "SSH"],
+        icon: "🖥️",
+        readme: `<h3>🖥️ SSH & PowerShell Monitor</h3><p>Real-time monitor displaying active remote administration streams and server metrics.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>📈 Stream system stats from remote CentOS/Windows servers.</li><li>🔔 Toast notifications on connection drop.</li><li>📊 Connection history logs.</li></ul>`
+      },
+      {
+        id: "ja_symlink",
+        name: "ja_symlink.exe",
+        displayName: "JA_Symlink",
+        type: "Dart",
+        version: "v1.0.1",
+        description: "NTFS/Unix symbolic link manager for mapping project workspace folders.",
+        download: "releases/dart/ja_symlink.exe",
+        size: "90 KB",
+        tags: ["System", "Workspace", "File"],
+        icon: "🔗",
+        readme: `<h3>🔗 JA_Symlink</h3><p>A wrapper utility to create symbolic links and directory junctions easily on Windows.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>📁 Map local project folders across separate SSD drives.</li><li>🧹 Automated cleanup of dead symlinks.</li><li>💻 Interactive command-line wizard.</li></ul>`
+      },
+      {
+        id: "ja_sync",
+        name: "ja_sync.exe",
+        displayName: "JA_Sync",
+        type: "Dart",
+        version: "v1.4.0",
+        description: "High-speed file synchronization tool for local backups and workspace mirroring.",
+        download: "releases/dart/ja_sync.exe",
+        size: "131 KB",
+        tags: ["Utility", "Backup", "Sync"],
+        icon: "🔄",
+        readme: `<h3>🔄 JA_Sync</h3><p>Fast directory syncer for mirroring project workspaces and local data pipelines.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>⚡ Multi-threaded file hashing comparison.</li><li>📂 Incremental synchronization (only copy changed files).</li><li>🕒 Cron-like scheduler for silent background runs.</li></ul>`
+      },
+      {
+        id: "ja_wifi_manager",
+        name: "ja_wifi_manager.exe",
+        displayName: "JA_WiFi_Manager",
+        type: "Dart",
+        version: "v1.1.2",
+        description: "CLI Wi-Fi profile supervisor and signal quality diagnostician.",
+        download: "releases/dart/ja_wifi_manager.exe",
+        size: "94 KB",
+        tags: ["Network", "Wireless", "CLI"],
+        icon: "📶",
+        readme: `<h3>📶 JA_WiFi_Manager</h3><p>Command-line tool to query, connect, and export Wi-Fi profile passwords.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>🔑 Recover saved Wi-Fi keys on Windows.</li><li>📶 Signal strength monitoring graph.</li><li>🌐 Auto-connect to best profile fallback.</li></ul>`
+      },
+      // Python Apps
+      {
+        id: "clone_voice_tool",
+        name: "CLONE_VOICE_TOOL.zip",
+        displayName: "CLONE_VOICE_TOOL",
+        type: "Python",
+        version: "v2.1.0",
+        description: "Professional neural voice cloning and text-to-speech engine with a beautiful PySide6 GUI.",
+        download: "releases/py/CLONE_VOICE_TOOL.zip",
+        size: "11.7 MB",
+        tags: ["AI", "Voice", "TTS", "PySide6"],
+        icon: "🎙️",
+        readme: `<h3>🤖 CLONE_VOICE_TOOL</h3><p>Python-based AI sound clone app utilizing PySide6 for glassmorphism layout.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>🎙️ Multi-lingual neural voice synthesis.</li><li>📈 Custom weights tuning panel.</li><li>🔊 Batch export WAV/MP3 files.</li></ul>`
+      },
+      {
+        id: "ja_autobuild",
+        name: "JA_AutoBuild.zip",
+        displayName: "JA_AutoBuild",
+        type: "Python",
+        version: "v1.0.5",
+        description: "Automated builder and compiler utility to bundle Python scripts into portable Windows executables.",
+        download: "releases/py/JA_AutoBuild.zip",
+        size: "2.05 MB",
+        tags: ["DevOps", "Build", "PyInstaller"],
+        icon: "📦",
+        readme: `<h3>📦 JA_AutoBuild</h3><p>Simplifies compilation of python codebases. Pre-configures PyInstaller commands and packages resources.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>🛠️ Automatically include DLLs, images, and config folders.</li><li>⚡ Code obfuscation using Cython (PyToCy integrations).</li><li>📂 Standalone or installer packages output.</li></ul>`
+      },
+      {
+        id: "ja_auto_git_py",
+        name: "JA_AUTO_GIT.zip",
+        displayName: "JA_AUTO_GIT",
+        type: "Python",
+        version: "v1.5.0",
+        description: "Liquid Glass graphical shell for managing multiple Git repositories concurrently.",
+        download: "releases/py/JA_AUTO_GIT.zip",
+        size: "2.88 MB",
+        tags: ["Git", "PySide6", "Automation"],
+        icon: "📊",
+        readme: `<h3>💎 JA Auto Git - Liquid Glass Edition</h3><p>Python implementation of the auto git workspace orchestrator. Runs a gorgeous PySide6 Dark/Light theme.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>📊 Multi-project status scan tree view.</li><li>🎨 Liquid Glass UI tokens and widgets styling.</li><li>🔗 GitHub API integration.</li></ul>`
+      },
+      {
+        id: "ja_smart_bk",
+        name: "JA_SMART_BK.zip",
+        displayName: "JA_SMART_BK",
+        type: "Python",
+        version: "v2.0.0",
+        description: "Intelligent incremental backup engine with directory monitoring and snapshot scheduling.",
+        download: "releases/py/JA_SMART_BK.zip",
+        size: "304 KB",
+        tags: ["Backup", "Utility", "System"],
+        icon: "📁",
+        readme: `<h3>🛡️ JA_SMART_BK</h3><p>Intelligent backup utility running quietly in the tray. Tracks directory alterations.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>🔄 File watchdog system using watchdog libraries.</li><li>📦 Compressed delta snapshot outputs.</li><li>☁️ Cloud sync options.</li></ul>`
+      },
+      {
+        id: "ja_translate_py",
+        name: "JA_TRANSLATE.zip",
+        displayName: "JA_TRANSLATE",
+        type: "Python",
+        version: "v1.2.0",
+        description: "Local database dictionary and machine translation GUI interface.",
+        download: "releases/py/JA_TRANSLATE.zip",
+        size: "277 KB",
+        tags: ["AI", "Localization", "GUI"],
+        icon: "🌐",
+        readme: `<h3>🌐 JA_TRANSLATE</h3><p>Desktop translation application to localize configuration files, code files, and documents.</p><br><h4>💡 Key Features:</h4><ul class="list-disc pl-5 space-y-1"><li>📂 Excel/JSON localization support.</li><li>⚡ Offline translator pipeline fallback.</li><li>📋 History logs.</li></ul>`
+      }
+    ];
+
+    // Tracks List (Ambient Workspace Music)
+    const playlist = [
+      { name: "CROWN OF THORNS", src: "assets/sounds/0. CROWN OF THORNS.mp3" },
+      { name: "Hướng vào anhh", src: "assets/sounds/1. Hướng vào anhh.mp3" },
+      { name: "Wait Her Call", src: "assets/sounds/2. Wait Her Call.mp3" },
+      { name: "Trên cầu thiếu em", src: "assets/sounds/3. Trên cầu thiếu em.mp3" },
+      { name: "Sau Những Đêm", src: "assets/sounds/4. Sau Những Đêm.mp3" }
+    ];
+
+    // System variables
+    let currentTrackIdx = 0;
+    let isPlaying = false;
+    let currentStyle = 'glass'; // 'glass', 'waves', 'corridor', 'showroom'
+    let currentFilter = 'all';
+    let searchQuery = '';
+    const lerpFactor = 0.08;
+
+    // Elements
+    const audio = document.getElementById("audio-element");
+    const clickFx = document.getElementById("click-fx");
+    const hoverFx = document.getElementById("hover-fx");
+    const ambientGlow = document.getElementById("ambient-glow");
+    const projectGrid = document.getElementById("project-grid");
+    const searchInput = document.getElementById("search-input");
+    
+    // Modal elements
+    const modalContainer = document.getElementById("modal-container");
+    const modalClose = document.getElementById("modal-close");
+    const modalTitle = document.getElementById("modal-title");
+    const modalBody = document.getElementById("modal-body");
+    const modalSizeTag = document.getElementById("modal-size-tag");
+    const modalDownloadLink = document.getElementById("modal-download-link");
+
+    // Sound helpers
+    function playClick() {
+      clickFx.currentTime = 0;
+      clickFx.play().catch(() => {});
+    }
+    function playHover() {
+      hoverFx.currentTime = 0;
+      hoverFx.volume = 0.25;
+      hoverFx.play().catch(() => {});
+    }
+
+    // Dynamic Bento Cards Rendering (Infinity Exact Style)
+    function renderProjectCards() {
+      projectGrid.innerHTML = "";
+      const query = searchQuery.toLowerCase().trim();
+
+      const filtered = projects.filter(proj => {
+        // Type filter
+        const typeMatch = currentFilter === 'all' || 
+                          (currentFilter === 'dart' && proj.type === 'Dart') ||
+                          (currentFilter === 'py' && proj.type === 'Python');
+        
+        // Search query filter
+        const queryMatch = !query || 
+                           proj.displayName.toLowerCase().includes(query) ||
+                           proj.description.toLowerCase().includes(query) ||
+                           proj.tags.some(t => t.toLowerCase().includes(query));
+
+        return typeMatch && queryMatch;
+      });
+
+      if (filtered.length === 0) {
+        projectGrid.innerHTML = `
+          <div class="col-span-full py-16 text-center text-white/20 font-mono text-sm">
+            NO PROJECTS FOUND MATCHING YOUR CRITERIA
+          </div>
+        `;
+        return;
+      }
+
+      // Render cards
+      filtered.forEach(proj => {
+        const tagsMarkup = proj.tags.map(t => 
+          `<span class="bg-white/5 border border-white/5 text-[9px] font-mono text-white/50 px-2.5 py-0.5 rounded-full uppercase tracking-wider">${t}</span>`
+        ).join("");
+
+        const techBadge = proj.type === "Dart" ? "FREE" : "NEW";
+        const techClass = proj.type === "Dart" ? "dart-card" : "py-card";
+        const badgeColor = proj.type === "Dart" ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" : "text-purple-400 bg-purple-500/10 border-purple-500/20";
+        const hoverArrowColor = proj.type === "Dart" ? "group-hover:text-emerald-400" : "group-hover:text-purple-400";
+
+        const card = document.createElement("div");
+        card.className = `bento-card ${techClass} p-6 flex flex-col justify-between group cursor-pointer sound-click select-text`;
+        card.setAttribute("onclick", `openExhibitModal('${proj.id}')`);
+
+        card.innerHTML = `
+          <div>
+            <div class="flex justify-between items-center text-[10px] font-mono mb-4 select-none">
+              <div class="flex items-center gap-2">
+                <span class="text-sm">${proj.icon || '⬡'}</span>
+                <span class="border px-2.5 py-0.5 rounded-full uppercase tracking-wider font-semibold ${badgeColor}">
+                  ${techBadge}
+                </span>
+              </div>
+              <span class="text-white/40">${proj.size}</span>
+            </div>
+
+            <h3 class="text-lg font-bold text-white group-hover:text-white/95 transition-all">
+              ${proj.displayName}
+            </h3>
+            <span class="text-[10px] text-white/30 font-mono select-none">${proj.version} // ACTIVE</span>
+            
+            <p class="text-xs text-white/50 leading-relaxed font-sans mt-3.5">
+              ${proj.description}
+            </p>
+          </div>
+
+          <div class="mt-6 select-none">
+            <div class="flex flex-wrap gap-1.5 mb-5">
+              ${tagsMarkup}
+            </div>
+            
+            <div class="flex items-center justify-between gap-3 pt-4 border-t border-white/5">
+              <span class="text-[10px] font-mono text-white/30 group-hover:text-white/70 transition-all flex items-center gap-1">
+                View documentation <span class="group-hover:translate-x-1.5 transition-transform ${hoverArrowColor}">→</span>
+              </span>
+              
+              <a href="${proj.download}" onclick="event.stopPropagation();" class="bg-white hover:bg-white/90 text-black text-[10px] font-mono font-bold py-1.5 px-4 rounded-full flex items-center gap-1 transition-all shadow-md" download>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                download
+              </a>
+            </div>
+          </div>
+        `;
+        projectGrid.appendChild(card);
+      });
+
+      setupSoundFxTriggers();
+    }
+
+    // Modal Control
+    window.openExhibitModal = function(id) {
+      const proj = projects.find(p => p.id === id);
+      if (!proj) return;
+      playClick();
+
+      modalTitle.innerText = proj.displayName;
+      modalBody.innerHTML = proj.readme;
+      modalSizeTag.innerText = `SIZE: ${proj.size} | release: ${proj.type} | version: ${proj.version}`;
+      modalDownloadLink.href = proj.download;
+      modalContainer.classList.remove("hidden");
+    };
+
+    modalClose.addEventListener("click", () => {
+      modalContainer.classList.add("hidden");
+    });
+
+    modalContainer.addEventListener("click", (e) => {
+      if (e.target === modalContainer) {
+        modalContainer.classList.add("hidden");
+        playClick();
+      }
+    });
+
+    // Filtering handler
+    window.filterCategory = function(cat) {
+      playClick();
+      currentFilter = cat;
+
+      document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.classList.remove("active");
+      });
+      document.getElementById("filter-" + cat).classList.add("active");
+
+      renderProjectCards();
+    };
+
+    // Live search input
+    searchInput.addEventListener("input", (e) => {
+      searchQuery = e.target.value;
+      renderProjectCards();
+    });
+
+    // Mouse tracking for Three.js coordinates
+    let mouse3D = { x: 0, y: 0 };
+    let targetMouse3D = { x: 0, y: 0 };
+
+    window.addEventListener('mousemove', (e) => {
+      ambientGlow.style.left = e.clientX + 'px';
+      ambientGlow.style.top = e.clientY + 'px';
+      
+      targetMouse3D.x = (e.clientX / window.innerWidth) * 2 - 1;
+      targetMouse3D.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    // Sound toggle control
+    const soundToggle = document.getElementById("sound-toggle");
+    const waveContainer = document.getElementById("wave-container");
+    const ambientTitle = document.getElementById("ambient-title");
+    const trackMeta = document.getElementById("track-meta");
+
+    function playMusic() {
+      audio.play().then(() => {
+        isPlaying = true;
+        waveContainer.classList.add("wave-active");
+        ambientTitle.innerText = playlist[currentTrackIdx].name;
+        trackMeta.innerText = `TRACK ${currentTrackIdx + 1}/${playlist.length}`;
+      }).catch((e) => {
+        console.log("Audio block: " + e);
+      });
+    }
+
+    soundToggle.addEventListener("click", () => {
+      playClick();
+      if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        waveContainer.classList.remove("wave-active");
+        ambientTitle.innerText = "MUTED";
+      } else {
+        playMusic();
+      }
+    });
+
+    audio.addEventListener("ended", () => {
+      currentTrackIdx = (currentTrackIdx + 1) % playlist.length;
+      audio.src = playlist[currentTrackIdx].src;
+      playMusic();
+    });
+
+    // Vertical Scroll mapping logic for 3D Camera depth pan
+    let targetScrollProgress = 0;
+    let currentScrollProgress = 0;
+
+    window.addEventListener('scroll', () => {
+      const maxScrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      targetScrollProgress = maxScrollHeight > 0 ? (window.scrollY / maxScrollHeight) : 0;
+    });
+
+    // Three.js 3D WebGL Background Setup (Obsidian Dark Themes)
+    let scene, camera, renderer, exhibitGroup;
+
+    function initWebGL() {
+      if (!window.THREE) {
+        console.warn("Three.js not loaded. Falling back to clean CSS background.");
+        return;
+      }
+
+      try {
+        const canvas = document.getElementById('bg-canvas');
+        
+        scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x030303, 0.012); // Fog set to pure black matching the background
+
+        camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 2.2, 0); 
+        camera.lookAt(0, 2.2, -10);
+
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+        exhibitGroup = new THREE.Group();
+        scene.add(exhibitGroup);
+
+        buildGlassScene();
+
+        window.addEventListener('resize', onWindowResize);
+      } catch (err) {
+        console.error("WebGL Initialization failed: ", err);
+      }
+    }
+
+    // ----------------------------------------------------
+    // Option 1: Glass Orbs Scene (Abstract Dark Glass)
+    // ----------------------------------------------------
+    function buildGlassScene() {
+      scene.fog = new THREE.FogExp2(0x030303, 0.009);
+
+      const ambient = new THREE.AmbientLight(0xffffff, 0.12);
+      exhibitGroup.add(ambient);
+
+      // Cyan light
+      const cyanLight = new THREE.DirectionalLight(0x00d4ff, 1.4);
+      cyanLight.position.set(10, 20, 15);
+      cyanLight.castShadow = true;
+      exhibitGroup.add(cyanLight);
+
+      // Purple light
+      const purpleLight = new THREE.DirectionalLight(0xb026ff, 0.9);
+      purpleLight.position.set(-15, 10, -5);
+      exhibitGroup.add(purpleLight);
+
+      const sphereGeo = new THREE.SphereGeometry(3.2, 32, 32);
+      const glassMat = new THREE.MeshPhysicalMaterial({
+        color: 0xffffff,
+        roughness: 0.04,
+        transmission: 0.94,
+        thickness: 1.8,
+        ior: 1.5,
+        clearcoat: 1.0
+      });
+
+      window.floaters = [];
+
+      for (let idx = 0; idx < 20; idx++) {
+        const mesh = new THREE.Mesh(sphereGeo, glassMat);
+        const x = (Math.random() - 0.5) * 26;
+        const y = (Math.random() - 0.5) * 6 + 2.2;
+        const z = -idx * 11 - 5;
+        mesh.position.set(x, y, z);
+
+        const scale = Math.random() * 0.8 + 0.4;
+        mesh.scale.set(scale, scale, scale);
+
+        exhibitGroup.add(mesh);
+        window.floaters.push({
+          mesh: mesh,
+          baseY: y,
+          speed: Math.random() * 0.0012 + 0.0006,
+          offset: Math.random() * Math.PI
+        });
+      }
+
+      // Dark Grid floor
+      const grid = new THREE.GridHelper(100, 30, 0x1f1f23, 0x18181b);
+      grid.position.y = -5;
+      grid.position.z = -100;
+      grid.material.opacity = 0.2;
+      grid.material.transparent = true;
+      exhibitGroup.add(grid);
+    }
+
+    // ----------------------------------------------------
+    // Option 2: 3D Wave Fabric (Cyan Wireframe Matrix)
+    // ----------------------------------------------------
+    function buildWavesScene() {
+      scene.fog = new THREE.FogExp2(0x030303, 0.015);
+
+      const ambient = new THREE.AmbientLight(0xffffff, 0.1);
+      exhibitGroup.add(ambient);
+
+      const sun = new THREE.DirectionalLight(0x00d4ff, 1.5);
+      sun.position.set(15, 25, 10);
+      exhibitGroup.add(sun);
+
+      const waveGeo = new THREE.PlaneGeometry(130, 130, 42, 42);
+      
+      const waveMat = new THREE.MeshPhysicalMaterial({
+        color: 0x030303,
+        roughness: 0.25,
+        metalness: 0.9,
+        clearcoat: 1.0,
+        flatShading: true
+      });
+
+      window.waveMesh = new THREE.Mesh(waveGeo, waveMat);
+      window.waveMesh.rotation.x = -Math.PI / 2.3;
+      window.waveMesh.position.y = -5.5;
+      window.waveMesh.position.z = -30;
+      exhibitGroup.add(window.waveMesh);
+
+      const wireframeMat = new THREE.MeshBasicMaterial({
+        color: 0x00d4ff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.12
+      });
+      window.waveWire = new THREE.Mesh(waveGeo, wireframeMat);
+      window.waveWire.rotation.x = -Math.PI / 2.3;
+      window.waveWire.position.y = -5.45;
+      window.waveWire.position.z = -30;
+      exhibitGroup.add(window.waveWire);
+    }
+
+    // ----------------------------------------------------
+    // Option 3: Architectural Gallery Corridor (Cyber Obsidian)
+    // ----------------------------------------------------
+    function buildCorridorScene() {
+      scene.fog = new THREE.FogExp2(0x030303, 0.014);
+
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0x0b0b0d, roughness: 0.9, metalness: 0.1 });
+      const floorMat = new THREE.MeshStandardMaterial({ color: 0x050507, roughness: 0.8, metalness: 0.15 });
+      const colMat = new THREE.MeshStandardMaterial({ color: 0x121214, roughness: 0.7, metalness: 0.2 });
+
+      const length = 240;
+
+      // Floor
+      const floorGeo = new THREE.PlaneGeometry(35, length);
+      const floor = new THREE.Mesh(floorGeo, floorMat);
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.set(0, 0, -length/2 + 20);
+      floor.receiveShadow = true;
+      exhibitGroup.add(floor);
+
+      // Ceiling
+      const ceilingGeo = new THREE.PlaneGeometry(35, length);
+      const ceiling = new THREE.Mesh(ceilingGeo, wallMat);
+      ceiling.rotation.x = Math.PI / 2;
+      ceiling.position.set(0, 8.5, -length/2 + 20);
+      ceiling.receiveShadow = true;
+      exhibitGroup.add(ceiling);
+
+      // Wall panels
+      const panelWidth = 14;
+      const wallHeight = 8.5;
+      const panelGeo = new THREE.BoxGeometry(panelWidth, wallHeight, 0.4);
+
+      for (let z = 10; z > -length; z -= 16) {
+        const panelL = new THREE.Mesh(panelGeo, wallMat);
+        panelL.position.set(-17.5, 4.25, z);
+        panelL.rotation.y = Math.PI / 2;
+        panelL.receiveShadow = true;
+        exhibitGroup.add(panelL);
+
+        const panelR = new THREE.Mesh(panelGeo, wallMat);
+        panelR.position.set(17.5, 4.25, z);
+        panelR.rotation.y = -Math.PI / 2;
+        panelR.receiveShadow = true;
+        exhibitGroup.add(panelR);
+      }
+
+      // Pillars
+      const colGeo = new THREE.BoxGeometry(2.5, 8.5, 2.5);
+      const beamGeo = new THREE.BoxGeometry(35, 1.5, 2.5);
+
+      for (let z = 0; z > -length; z -= 16) {
+        const colL = new THREE.Mesh(colGeo, colMat);
+        colL.position.set(-16.25, 4.25, z);
+        colL.castShadow = true;
+        exhibitGroup.add(colL);
+
+        const colR = new THREE.Mesh(colGeo, colMat);
+        colR.position.set(16.25, 4.25, z);
+        colR.castShadow = true;
+        exhibitGroup.add(colR);
+
+        const beam = new THREE.Mesh(beamGeo, colMat);
+        beam.position.set(0, 7.75, z);
+        exhibitGroup.add(beam);
+
+        const spotColor = (z / 16) % 2 === 0 ? 0x00d4ff : 0xb026ff;
+        const spot = new THREE.SpotLight(spotColor, 1.6, 28, Math.PI / 3, 0.5, 1);
+        spot.position.set(0, 7, z);
+        spot.target.position.set(0, 0, z);
+        spot.castShadow = true;
+        exhibitGroup.add(spot);
+        exhibitGroup.add(spot.target);
+      }
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+      exhibitGroup.add(ambientLight);
+    }
+
+    // ----------------------------------------------------
+    // Option 4: Abstract Bento Showroom (Showcase Sculptures)
+    // ----------------------------------------------------
+    function buildShowroomScene() {
+      scene.fog = new THREE.FogExp2(0x030303, 0.01);
+
+      const ambient = new THREE.AmbientLight(0xffffff, 0.15);
+      exhibitGroup.add(ambient);
+
+      const sun = new THREE.DirectionalLight(0xe2ba6c, 1.2);
+      sun.position.set(15, 25, 10);
+      sun.castShadow = true;
+      exhibitGroup.add(sun);
+
+      const obsidianMat = new THREE.MeshStandardMaterial({ 
+        color: 0x0b0b0d, 
+        roughness: 0.1, 
+        metalness: 0.95 
+      });
+      const goldMat = new THREE.MeshStandardMaterial({ 
+        color: 0xe2ba6c, 
+        roughness: 0.25, 
+        metalness: 0.95 
+      });
+      const glassMat = new THREE.MeshPhysicalMaterial({
+        color: 0x00d4ff,
+        roughness: 0.05,
+        transmission: 0.92,
+        thickness: 1.2,
+        ior: 1.45,
+        clearcoat: 1.0
+      });
+
+      window.showroomItems = [];
+
+      const geometries = [
+        new THREE.TorusGeometry(3.5, 0.9, 16, 100),
+        new THREE.CylinderGeometry(2, 2, 6, 32),
+        new THREE.BoxGeometry(4.2, 4.2, 4.2),
+        new THREE.ConeGeometry(2.5, 5, 4),
+        new THREE.TorusKnotGeometry(1.8, 0.6, 120, 16)
+      ];
+
+      for (let i = 0; i < 20; i++) {
+        const geom = geometries[i % geometries.length];
+        
+        let mat = obsidianMat;
+        if (i % 3 === 1) mat = glassMat;
+        if (i % 3 === 2) mat = goldMat;
+
+        const mesh = new THREE.Mesh(geom, mat);
+        
+        const x = (Math.random() - 0.5) * 22;
+        const y = (Math.random() - 0.5) * 6 + 2.2;
+        const z = -i * 12 - 5;
+
+        mesh.position.set(x, y, z);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+
+        exhibitGroup.add(mesh);
+        window.showroomItems.push({
+          mesh: mesh,
+          baseY: y,
+          rotSpeedX: Math.random() * 0.006 + 0.002,
+          rotSpeedY: Math.random() * 0.006 + 0.002,
+          offset: Math.random() * Math.PI
+        });
+      }
+
+      const grid = new THREE.GridHelper(100, 30, 0x1f1f23, 0x18181b);
+      grid.position.y = -5;
+      grid.position.z = -100;
+      grid.material.opacity = 0.15;
+      grid.material.transparent = true;
+      exhibitGroup.add(grid);
+    }
+
+    // ----------------------------------------------------
+    // Style Switcher Handler
+    // ----------------------------------------------------
+    window.switchBackgroundStyle = function(styleName) {
+      if (!scene || !exhibitGroup) return;
+      currentStyle = styleName;
+      playClick();
+
+      const styles = ['glass', 'waves', 'corridor', 'showroom'];
+      styles.forEach(s => {
+        const btn = document.getElementById('style-' + s);
+        if (btn) {
+          if (s === styleName) {
+            btn.className = "hover:text-white transition-colors text-white";
+          } else {
+            btn.className = "hover:text-colors hover:text-white transition-colors";
+          }
+        }
+      });
+
+      // Wipe previous objects
+      while (exhibitGroup.children.length > 0) {
+        const obj = exhibitGroup.children[0];
+        exhibitGroup.remove(obj);
+      }
+
+      // Rebuild designated style elements
+      if (styleName === 'glass') {
+        buildGlassScene();
+      } else if (styleName === 'waves') {
+        buildWavesScene();
+      } else if (styleName === 'corridor') {
+        buildCorridorScene();
+      } else if (styleName === 'showroom') {
+        buildShowroomScene();
+      }
+    };
+
+    function onWindowResize() {
+      if (!camera || !renderer) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function animateWebGL() {
+      if (!scene || !camera || !renderer) return;
+      
+      const time = performance.now() * 0.0005;
+      
+      // Interpolate mouse coordinates (parallax)
+      mouse3D.x += (targetMouse3D.x - mouse3D.x) * 0.05;
+      mouse3D.y += (targetMouse3D.y - mouse3D.y) * 0.05;
+
+      if (currentStyle === 'glass') {
+        const cameraZ = -currentScrollProgress * 150;
+        camera.position.set(mouse3D.x * 2.2, 2.2 + mouse3D.y * 0.8, cameraZ);
+        camera.lookAt(mouse3D.x * 3.5, 2.2 + mouse3D.y, cameraZ - 15);
+
+        if (window.floaters) {
+          window.floaters.forEach(f => {
+            f.mesh.position.y = f.baseY + Math.sin(time * 2 + f.offset) * 0.25;
+            f.mesh.rotation.y += f.speed;
+            f.mesh.rotation.z += 0.0002;
+          });
+        }
+      } 
+      else if (currentStyle === 'waves') {
+        camera.position.set(mouse3D.x * 3, 4 + mouse3D.y * 1.5, 25);
+        camera.lookAt(0, -1, 0);
+
+        if (window.waveMesh && window.waveWire) {
+          const pos = window.waveMesh.geometry.attributes.position;
+          const posWire = window.waveWire.geometry.attributes.position;
+          const scrollOffset = currentScrollProgress * 2.5;
+          for (let i = 0; i < pos.count; i++) {
+            const x = pos.getX(i);
+            const y = pos.getY(i);
+            const z = Math.sin(x * 0.06 + time + scrollOffset) * Math.cos(y * 0.06 + time) * 3.4 +
+                      Math.sin(x * 0.15 - time) * 0.5;
+            pos.setZ(i, z);
+            posWire.setZ(i, z);
+          }
+          pos.needsUpdate = true;
+          posWire.needsUpdate = true;
+          window.waveMesh.geometry.computeVertexNormals();
+        }
+      } 
+      else if (currentStyle === 'corridor') {
+        const cameraZ = -currentScrollProgress * 200;
+        camera.position.set(mouse3D.x * 1.5, 2.2 + mouse3D.y * 0.6, cameraZ);
+        camera.lookAt(mouse3D.x * 2.5, 2.2 + mouse3D.y * 0.8, cameraZ - 15);
+      }
+      else if (currentStyle === 'showroom') {
+        const cameraZ = -currentScrollProgress * 180;
+        camera.position.set(mouse3D.x * 2.2, 2.2 + mouse3D.y * 0.8, cameraZ);
+        camera.lookAt(mouse3D.x * 3.5, 2.2 + mouse3D.y, cameraZ - 15);
+
+        if (window.showroomItems) {
+          window.showroomItems.forEach(f => {
+            f.mesh.position.y = f.baseY + Math.sin(time * 2.5 + f.offset) * 0.2;
+            f.mesh.rotation.x += f.rotSpeedX;
+            f.mesh.rotation.y += f.rotSpeedY;
+          });
+        }
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    // Custom animation tick
+    function updateGallery() {
+      // Lerp vertical scroll progress
+      currentScrollProgress += (targetScrollProgress - currentScrollProgress) * lerpFactor;
+
+      // Call WebGL tick safely
+      animateWebGL();
+
+      requestAnimationFrame(updateGallery);
+    }
+
+    // Portal exit gate
+    document.getElementById("btn-enter").addEventListener("click", () => {
+      playClick();
+      document.getElementById("intro-portal").classList.add("portal-hidden");
+      
+      // Load and start ambient track
+      audio.src = playlist[currentTrackIdx].src;
+      playMusic();
+    });
+
+    // Sound triggers
+    function setupSoundFxTriggers() {
+      document.querySelectorAll('.sound-click').forEach(el => {
+        el.addEventListener('click', () => playClick());
+      });
+      document.querySelectorAll('.sound-hover').forEach(el => {
+        el.addEventListener('mouseenter', () => playHover());
+      });
+    }
+
+    // Initial setup runs
+    initWebGL();
+    renderProjectCards();
+    setupSoundFxTriggers();
+    
+    // Start gallery ticker loop
+    requestAnimationFrame(updateGallery);
+  </script>
+
+</body>
+</html>

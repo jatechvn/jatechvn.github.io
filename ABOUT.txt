@@ -1,24 +1,32 @@
 ================================================================================
                            SYSTEM INFORMATION CARD
 ================================================================================
-Project Name  : jatechvn.github.io (JA-HUB Personal Portal)
-Tech Stack    : HTML5 / CSS3 (Obsidian BilloDesign Style) / ES6 Javascript
+Project Name  : jatechvn.github.io (JA-HUB Software Ecosystem)
+Tech Stack    : HTML5 / CSS3 (Infinity Carbon Grid Style) / ES6 Javascript
 Managed By    : OpenClaw AI Co-pilot & JA Auto Git
 Website       : https://jatechvn.github.io/
 License       : MIT License
+Version       : v5.2.0
 --------------------------------------------------------------------------------
 Description   : 
-  The official central landing page and automation workspace dashboard for 
-  Johnny (jatechvn). It features a premium dark obsidian theme inspired by 
-  billodesign.webflow.io, complete with an interactive mouse-tracking Spline 3D 
-  orb background, animated welcome preloader curtains, glowing rotating gradient 
-  borders, pulsing systems indicators, and paired typography (Lato + IBM Plex Mono).
+  The official central landing page and software exhibition hub for Johnny 
+  (jatechvn). It features a premium dark technical bento grid dashboard 
+  layout inspired by infinitytechstack.uk, overlaying a custom Three.js WebGL 
+  interactive environment.
   
-  Retains all core functions: interactive SVG system map, dynamic project folder 
-  explorer, Unix shell terminal console simulator, and custom Apple Music player 
-  with dynamic MP3 album art parser and expandable volume controller.
+  Key details:
+  - Curtains Preloader: Left and right split-screen panels parting horizontally
+    on initial page load with a smooth stage curtain transition.
+  - Blurry 3D Portal Backplate: Landing panel made semi-transparent with heavy 
+    backdrop blur filters to show active WebGL shapes.
+  - 3D WebGL Themes: 4 toggleable background modes (Glass Orbs, 3D Waves, 
+    Architectural Corridor, Showroom Sculptures) mapped to vertical scroll.
+  - Bento Stack Cards: Color-coded glow outlines (emerald for Dart compiled 
+    binaries, purple for Python PySide6 scripts) reacting to hover movements.
+  - Dynamic Filters: Interactive live search and technology category filters.
+  - iOS Music Player: Pinned header playlist playing 5 local ambient tracks.
 --------------------------------------------------------------------------------
 Architecture  : 
-  Brain (Core Controller Node) connected to Workers (Python, AHK, C#, 
-  JavaScript, PowerShell, Batch, and Cloud VPS infrastructure).
+  Brain (Core Controller Node) hostingcompiled binary releases and worker 
+  automation script ecosystems.
 ================================================================================
