@@ -6,7 +6,7 @@ Tech Stack    : HTML5 / CSS3 (Infinity Carbon Grid Style) / ES6 Javascript
 Managed By    : OpenClaw AI Co-pilot & JA Auto Git
 Website       : https://jatechvn.github.io/
 License       : MIT License
-Version       : v6.0.0
+Version       : v6.1.0
 --------------------------------------------------------------------------------
 Description   : 
   The official central landing page and software exhibition hub for Johnny 

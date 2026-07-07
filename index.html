@@ -199,6 +199,14 @@
       background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.25), transparent);
       transition: opacity 0.6s ease;
     }
+
+    /* Custom Responsive Dynamic Island CSS rules */
+    #music-island {
+      width: var(--compact-width, 176px);
+    }
+    #music-island:hover {
+      width: 320px !important;
+    }
   </style>
 </head>
 <body class="select-none font-sans">
@@ -234,7 +242,7 @@
           <p class="text-[9px] font-mono text-white/60 mt-1 leading-none" data-i18n="logo-desc">DIGITAL EXHIBITION</p>
         </div>
       </div>
-      <div class="text-[10px] font-mono text-white/40 tracking-wider">v6.0.0 // EST. 2026</div>
+      <div class="text-[10px] font-mono text-white/40 tracking-wider">v6.1.0 // EST. 2026</div>
     </div>
 
     <div class="max-w-2xl mx-auto text-center flex flex-col items-center gap-8 select-text">
@@ -276,24 +284,58 @@
       </div>
 
       <div class="flex items-center gap-4 pointer-events-auto">
-        <div class="hidden xl:flex flex-col text-right font-mono text-[9px] text-white/40 leading-none">
-          <span class="text-white font-bold" id="ambient-title">NO MUSIC</span>
-          <span class="mt-1 font-medium" id="track-meta" data-i18n="nav-ambient">EXHIBITION AMBIENT</span>
-        </div>
         
         <!-- Language Switcher Toggle Button (EN/VN) -->
         <button id="lang-toggle" class="px-3 py-2 rounded-full border border-white/10 bg-[#030303]/60 backdrop-blur-md text-[10px] font-mono font-bold tracking-wider text-white/80 hover:text-white hover:border-white/40 cursor-pointer transition-all sound-click sound-hover" title="Switch Language">
           EN
         </button>
 
-        <button id="sound-toggle" class="flex items-center gap-2 p-2.5 rounded-full border border-white/10 bg-[#030303]/60 backdrop-blur-md cursor-pointer hover:border-white/40 hover:bg-white/5 transition-all group sound-hover" title="Toggle Background Ambient">
-          <div class="flex items-end gap-[2px] h-4 px-1" id="wave-container">
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
+        <!-- iPhone Dynamic Island style Music Widget -->
+        <div id="music-island" class="relative bg-black/90 border border-white/10 rounded-full flex items-center transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) px-3 py-1.5 gap-3 h-10 hover:h-20 hover:rounded-[22px] hover:px-4 hover:py-3.5 group/island cursor-pointer overflow-hidden sound-hover shadow-lg shadow-black/80">
+          
+          <!-- Compact View State (Auto centered & dynamically sized) -->
+          <div class="flex items-center justify-center gap-2 w-full transition-opacity duration-300 group-hover/island:opacity-0 group-hover/island:pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none">
+            <div class="flex items-end gap-[2px] h-3.5 px-0.5" id="wave-container">
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+            </div>
+            <div class="flex flex-col font-mono text-[9px] leading-tight max-w-[140px] overflow-hidden whitespace-nowrap text-left">
+              <span class="text-white font-bold truncate" id="ambient-title">NO MUSIC</span>
+              <span class="text-white/40 text-[8px] font-medium truncate" id="track-meta" data-i18n="nav-ambient">EXHIBITION AMBIENT</span>
+            </div>
           </div>
-        </button>
+
+          <!-- Expanded View State (revealed on hover) -->
+          <div class="opacity-0 pointer-events-none group-hover/island:opacity-100 group-hover/island:pointer-events-auto flex items-center justify-between w-full h-full transition-opacity duration-300 delay-[60ms] select-none">
+            <!-- Left side: Album Disc / Info -->
+            <div class="flex items-center gap-2.5 text-left">
+              <div class="relative w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center overflow-hidden flex-shrink-0 animate-spin" style="animation-duration: 6s; animation-play-state: paused;" id="island-cd">
+                <div class="w-2.5 h-2.5 rounded-full bg-black border border-white/20 z-10"></div>
+                <img id="island-cover-img" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300" src="" alt="Album Cover">
+                <svg id="island-fallback-svg" class="absolute inset-0 m-auto w-4.5 h-4.5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+              </div>
+              <div class="flex flex-col font-mono text-[10px] leading-tight max-w-[115px]">
+                <span class="text-white font-bold truncate" id="island-title">NO MUSIC</span>
+                <span class="text-white/40 text-[8px] font-medium mt-0.5 truncate" id="island-meta">EXHIBITION AMBIENT</span>
+              </div>
+            </div>
+
+            <!-- Right side: iOS Playback Buttons -->
+            <div class="flex items-center gap-2">
+              <button id="island-prev" class="p-1.5 hover:bg-white/10 rounded-full transition-colors text-white/70 hover:text-white sound-click" title="Prev">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.334 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z"/></svg>
+              </button>
+              <button id="island-play" class="p-2 bg-white text-black hover:scale-105 rounded-full transition-all flex items-center justify-center shadow-lg" title="Play/Pause">
+                <svg id="island-play-icon" class="w-3.5 h-3.5 fill-black" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+              <button id="island-next" class="p-1.5 hover:bg-white/10 rounded-full transition-colors text-white/70 hover:text-white sound-click" title="Next">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11.934 12.8a1 1 0 000-1.6l-5.334-4A1 1 0 005 8v8a1 1 0 001.6.8l5.334-4zM19.934 12.8a1 1 0 000-1.6l-5.334-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.334-4z"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
 
         <a href="#flagship" class="bg-[#ec4899] hover:bg-[#db2777] text-white text-[11px] font-semibold px-4 py-2 rounded-full transition-all shadow-md shadow-pink-500/10 sound-hover sound-click" data-i18n="nav-view-projects">
           View Projects ↓
@@ -310,7 +352,7 @@
         <button onclick="switchBackgroundStyle('corridor')" class="hover:text-colors hover:text-white transition-colors sound-hover" id="style-corridor" data-i18n="theme-corridor">Gallery</button>
         <button onclick="switchBackgroundStyle('showroom')" class="hover:text-colors hover:text-white transition-colors sound-hover" id="style-showroom" data-i18n="theme-showroom">Showroom</button>
       </div>
-      <div>v6.0.0 // EST. 2026 // DART & PYTHON</div>
+      <div>v6.1.0 // EST. 2026 // DART & PYTHON</div>
     </div>
   </header>
 
@@ -449,7 +491,7 @@
 
   <!-- Footer Info bar -->
   <footer class="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 py-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between text-xs font-mono text-white/30 gap-4 font-semibold">
-    <div><span data-i18n="footer-copy">JA-HUB SOFTWARE ARCHIVE © 2026</span> // v6.0.0</div>
+    <div><span data-i18n="footer-copy">JA-HUB SOFTWARE ARCHIVE © 2026</span> // v6.1.0</div>
     <div data-i18n="footer-tech">BUILT FROM SCRATCH IN DART, PYTHON & WEBGL</div>
   </footer>
 
@@ -801,6 +843,15 @@
     const modalSizeTag = document.getElementById("modal-size-tag");
     const modalDownloadLink = document.getElementById("modal-download-link");
 
+    // Dynamic Island Sub-elements
+    const waveContainer = document.getElementById("wave-container");
+    const ambientTitle = document.getElementById("ambient-title");
+    const trackMeta = document.getElementById("track-meta");
+    const islandCD = document.getElementById("island-cd");
+    const islandTitle = document.getElementById("island-title");
+    const islandMeta = document.getElementById("island-meta");
+    const islandPlayIcon = document.getElementById("island-play-icon");
+
     // Sound helpers
     function playClick() {
       clickFx.currentTime = 0;
@@ -831,6 +882,30 @@
       if (langToggle) {
         langToggle.innerText = currentLang === 'en' ? 'EN' : 'VN';
       }
+
+      // Sync Dynamic Island text translation fallbacks
+      const trackName = playlist[currentTrackIdx].name;
+      const trackIndexMeta = currentLang === 'en' ? `TRACK ${currentTrackIdx + 1}/${playlist.length}` : `BÀI HÁT ${currentTrackIdx + 1}/${playlist.length}`;
+      
+      let finalTrackName = "";
+      if (isPlaying) {
+        finalTrackName = trackName;
+        ambientTitle.innerText = trackName;
+        trackMeta.innerText = trackIndexMeta;
+        islandTitle.innerText = trackName;
+        islandMeta.innerText = trackIndexMeta;
+      } else {
+        finalTrackName = currentLang === 'en' ? "NO MUSIC" : "CHƯA PHÁT NHẠC";
+        ambientTitle.innerText = finalTrackName;
+        trackMeta.innerText = translations[currentLang]["nav-ambient"];
+        islandTitle.innerText = finalTrackName;
+        islandMeta.innerText = translations[currentLang]["nav-ambient"];
+      }
+
+      // Compute Dynamic Island compact width based on text length + wave icon
+      const textLen = finalTrackName.length;
+      const compactWidth = Math.max(130, textLen * 6.8 + 58);
+      document.getElementById("music-island").style.setProperty('--compact-width', compactWidth + 'px');
 
       // Re-render dynamically injected contents
       renderProjectCards();
@@ -989,35 +1064,101 @@
       targetMouse3D.y = -(e.clientY / window.innerHeight) * 2 + 1;
     });
 
-    // Sound toggle control
-    const soundToggle = document.getElementById("sound-toggle");
-    const waveContainer = document.getElementById("wave-container");
-    const ambientTitle = document.getElementById("ambient-title");
-    const trackMeta = document.getElementById("track-meta");
-
+    // Playback Engine Controls
     function playMusic() {
+      // Set audio source if not present
+      if (!audio.src || audio.src === "") {
+        audio.src = playlist[currentTrackIdx].src;
+      }
+      
       audio.play().then(() => {
         isPlaying = true;
         waveContainer.classList.add("wave-active");
-        ambientTitle.innerText = playlist[currentTrackIdx].name;
-        trackMeta.innerText = `TRACK ${currentTrackIdx + 1}/${playlist.length}`;
+        
+        const trackName = playlist[currentTrackIdx].name;
+        const trackIndexMeta = currentLang === 'en' ? `TRACK ${currentTrackIdx + 1}/${playlist.length}` : `BÀI HÁT ${currentTrackIdx + 1}/${playlist.length}`;
+
+        // Update compact display texts
+        ambientTitle.innerText = trackName;
+        trackMeta.innerText = trackIndexMeta;
+
+        // Update Dynamic Island expanded texts
+        islandTitle.innerText = trackName;
+        islandMeta.innerText = trackIndexMeta;
+
+        // Update Dynamic Island compact width on fly
+        const compactWidth = Math.max(130, trackName.length * 6.8 + 58);
+        document.getElementById("music-island").style.setProperty('--compact-width', compactWidth + 'px');
+
+        // Update album cover image
+        const coverImg = document.getElementById("island-cover-img");
+        const fallbackSvg = document.getElementById("island-fallback-svg");
+        if (coverImg && fallbackSvg) {
+          const coverSrc = playlist[currentTrackIdx].src.replace(".mp3", ".jpg");
+          coverImg.src = coverSrc;
+          coverImg.classList.remove("opacity-0");
+          fallbackSvg.classList.add("hidden");
+        }
+
+        // Spin CD art
+        islandCD.style.animationPlayState = "running";
+
+        // Switch play button icon to iOS Pause bars
+        islandPlayIcon.innerHTML = `<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="black"/>`;
       }).catch((e) => {
-        console.log("Audio block: " + e);
+        console.log("Audio play blocked: " + e);
       });
     }
 
-    soundToggle.addEventListener("click", () => {
+    function pauseMusic() {
+      audio.pause();
+      isPlaying = false;
+      waveContainer.classList.remove("wave-active");
+
+      const label = currentLang === 'en' ? "MUTED" : "TẠM DỪNG";
+      ambientTitle.innerText = label;
+      islandCD.style.animationPlayState = "paused";
+
+      // Update compact width on pause state
+      const compactWidth = Math.max(130, label.length * 6.8 + 58);
+      document.getElementById("music-island").style.setProperty('--compact-width', compactWidth + 'px');
+
+      // Switch play icon to iOS Play triangle
+      islandPlayIcon.innerHTML = `<path d="M8 5v14l11-7z" fill="black"/>`;
+    }
+
+    function toggleMusicState() {
+      playClick();
       if (isPlaying) {
-        audio.pause();
-        isPlaying = false;
-        waveContainer.classList.remove("wave-active");
-        ambientTitle.innerText = "MUTED";
+        pauseMusic();
       } else {
         playMusic();
       }
-    });
+    }
 
     audio.addEventListener("ended", () => {
+      currentTrackIdx = (currentTrackIdx + 1) % playlist.length;
+      audio.src = playlist[currentTrackIdx].src;
+      playMusic();
+    });
+
+    // Dynamic Island control listeners
+    document.getElementById("island-play").addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleMusicState();
+    });
+
+    document.getElementById("island-prev").addEventListener("click", (e) => {
+      e.stopPropagation();
+      playClick();
+      currentTrackIdx = (currentTrackIdx - 1 + playlist.length) % playlist.length;
+      audio.src = playlist[currentTrackIdx].src;
+      playMusic();
+    });
+
+    document.getElementById("island-next").addEventListener("click", (e) => {
+      e.stopPropagation();
+      playClick();
       currentTrackIdx = (currentTrackIdx + 1) % playlist.length;
       audio.src = playlist[currentTrackIdx].src;
       playMusic();

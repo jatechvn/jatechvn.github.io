@@ -15,7 +15,7 @@
   <img src="https://img.shields.io/badge/Theme-Infinity_Carbon-black.svg?style=flat-square&logo=tailwindcss" alt="Theme">
   <img src="https://img.shields.io/badge/Tech-HTML5_/_CSS3_/_ES6-purple.svg?style=flat-square&logo=javascript" alt="Technology">
   <img src="https://img.shields.io/badge/Deploy-GitHub_Pages-orange.svg?style=flat-square&logo=github" alt="Deployment">
-  <img src="https://img.shields.io/badge/Version-v6.0.0-blue.svg?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/Version-v6.1.0-blue.svg?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License">
 </p>
 
@@ -52,6 +52,7 @@ The portal adopts a technical, neomorphic dark-glass look with cutting-edge visu
 *   **Radial Background Glows**: Soft cyan, magenta, and purple radial gradients float at various depths, slowly drifting and scaling over time.
 *   **Scroll-Driven WebGL Parallax**: Integrates four adjustable 3D WebGL background themes (Glass Orbs, 3D Waves, Gallery, Showroom). Scrolling vertically down the page drives the camera depth down the Z-axis, flying past the 3D geometries in real time.
 *   **Bento Grid Card outlines**: Glass cards feature thin transparent borders that grow in brightness on hover, projecting an emerald glow for Dart tools and a purple glow for Python tools.
+*   **iPhone-style Dynamic Island Music Widget**: Merges ambient track metadata and playback indicators into a responsive capsule in the header navigation that dynamically auto-stretches its width based on text length. Smoothly morphs on hover to reveal playback controls (play/pause, next/prev) and a spinning album CD containing the active track's cover art.
 *   **Sound FX Triggers**: Satisfying clicking sounds (beep.mp3) and hover highlights (hover.mp3) trigger on interactive elements to mimic physical interface control.
 *   **Typography**: Clean `Inter` font paired with `JetBrains Mono` for tech metadata tags and versions.
 
