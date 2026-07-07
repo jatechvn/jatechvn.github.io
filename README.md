@@ -15,6 +15,7 @@
   <img src="https://img.shields.io/badge/Theme-Infinity_Carbon-black.svg?style=flat-square&logo=tailwindcss" alt="Theme">
   <img src="https://img.shields.io/badge/Tech-HTML5_/_CSS3_/_ES6-purple.svg?style=flat-square&logo=javascript" alt="Technology">
   <img src="https://img.shields.io/badge/Deploy-GitHub_Pages-orange.svg?style=flat-square&logo=github" alt="Deployment">
+  <img src="https://img.shields.io/badge/Version-v6.0.0-blue.svg?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License">
 </p>
 
