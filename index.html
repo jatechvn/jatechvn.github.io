@@ -429,7 +429,7 @@
     </section>
 
     <!-- Search & Filter Controls -->
-    <section class="sticky top-24 z-20 py-4 flex flex-col md:flex-row gap-4 items-center justify-between bg-[#030303]/85 backdrop-blur-md border border-white/5 rounded-2xl px-6 mb-12 shadow-lg select-none">
+    <section id="search-section" class="sticky top-24 z-20 py-4 flex flex-col md:flex-row gap-4 items-center justify-between bg-[#030303]/85 backdrop-blur-md border border-white/5 rounded-2xl px-6 mb-12 shadow-lg select-none">
       <!-- Search Input -->
       <div class="relative w-full md:w-80 flex-shrink-0 select-text">
         <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-white/30">
@@ -1044,6 +1044,14 @@
       document.getElementById("filter-" + cat).classList.add("active");
 
       renderProjectCards();
+
+      // Smooth scroll to search & filter section below sticky header
+      const searchSection = document.getElementById("search-section");
+      if (searchSection) {
+        const yOffset = -110; 
+        const y = searchSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
     };
 
     // Live search input
